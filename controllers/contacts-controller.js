@@ -22,8 +22,8 @@ const getAll = async (req, res) => {
   }
 
   const getById = async (req, res) => {
-      const { id } = req.params;
-      const result = await contactsService.getContactById(id);
+      const { contactId } = req.params;
+      const result = await contactsService.getContactById(contactId);
       if(!result) throw HttpError(404, "Not found");
       
       res.json(result);
@@ -32,7 +32,7 @@ const getAll = async (req, res) => {
   const add = async (req, res) => {
       const {error} = contactAddSchema.validate(req.body);
       if (error) {
-        throw HttpError(400, "missing fields");
+        throw HttpError(400, error.message);
       }
       const result = await contactsService.addContact(req.body);
       res.status(201).json(result);
@@ -41,22 +41,22 @@ const getAll = async (req, res) => {
   const updateById = async (req, res) => {
       const {error} = contactAddSchema.validate(req.body);
       if (error) {
-        throw HttpError(400, "missing fields");
+        throw HttpError(400, error.message);
       }
   
-      const {id} = req.params;
-      const result = await contactsService.updateContact(id, req.body);
+      const {contactId} = req.params;
+      const result = await contactsService.updateContact(contactId, req.body);
       if(!result) {
-        throw HttpError(404, `There's no contact with the id ${id}`);
+        throw HttpError(404, `The contact with the id ${contactId} not found`);
       }
       res.json(result);
   }
 
   const deleteById = async (req, res) => {
-      const {id} = req.params;
-      const result = await contactsService.removeContact(id);
+      const {contactId} = req.params;
+      const result = await contactsService.removeContact(contactId);
       if(!result) {
-        throw HttpError(404, `There's no contact with the id ${id}`);
+        throw HttpError(404, `The contact with the id ${contactId} not found`);
       }
       res.json({message: "contact deleted"})
   }
