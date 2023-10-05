@@ -34,7 +34,7 @@ const getAll = async (req, res) => {
       const {contactId} = req.params;
       const result = await contactsService.updateContact(contactId, req.body);
       if(!result) {
-        throw HttpError(404, `The contact with the id ${contactId} not found`);
+        throw HttpError(404, `Not found`);
       }
       res.json(result);
   }
@@ -43,7 +43,7 @@ const getAll = async (req, res) => {
       const {contactId} = req.params;
       const result = await contactsService.removeContact(contactId);
       if(!result) {
-        throw HttpError(404, `The contact with the id ${contactId} not found`);
+        throw HttpError(404, `Not found`);
       }
       res.json({message: "contact deleted"})
   }
