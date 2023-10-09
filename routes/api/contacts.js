@@ -12,7 +12,7 @@ contactsRouter.post('/', isEmptyBody, contactsController.add)
 
 contactsRouter.put('/:contactId', isValidId, isEmptyBody, contactsController.updateById)
 
-contactsRouter.patch("/:contactId", isValidId, isEmptyBody, contactsController.updateStatusContact)
+contactsRouter.patch("/:contactId/favorite", isValidId, isEmptyBody, contactsController.updateStatusContact)
 
 contactsRouter.delete('/:contactId', isValidId, contactsController.deleteById)
 
