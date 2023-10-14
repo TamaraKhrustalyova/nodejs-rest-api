@@ -41,6 +41,7 @@ const getAll = async (req, res) => {
   const updateStatusContact = async (req, res) => {
     const {error} = contactUpdateFavoriteSchema.validate(req.body);
     if (error) {
+      console.log(error.message)
       throw HttpError(400, error.message);
     }
     const { contactId } = req.params;
