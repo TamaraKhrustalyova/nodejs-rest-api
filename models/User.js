@@ -3,21 +3,60 @@ const {handleSaveError, runValidationAtUpdate} = require('./hooks');
 
 const Joi = require('joi');
 
-const emailRegexp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+const emailRegexp = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+const subscriptionOption = ["starter", "pro", "business"]
 
 const userSchema = new Schema({
-    username: {
-        type: String, 
-        required: true,
-    }, 
     email: {
         type: String, 
         match: emailRegexp,
-        required: true,
+        unique: true,
+        required: [true, 'Email is required'],
     }, 
     password: {
         type: String, 
-        minlength: 8,
-        required: true, 
-    }
+        required: [true, 'Set password for user'],
+    }, 
+    subscription: {
+        type: String,
+        enum: subscriptionOption,
+        default: "starter"
+      },
+    token: String
 }, {versionKey: false, timestamps: true})
+
+userSchema.post("save", handleSaveError);
+userSchema.pre("findOneAndUpdate", runValidationAtUpdate);
+userSchema.post("findOneAndUpdate", handleSaveError);
+
+const userRegisterSchema = Joi.object({
+    subscription: Joi.string()
+      .valid(...subscriptionOption),
+    email: Joi.string()
+      .pattern(emailRegexp)
+      .required(),  
+    password: Joi.string()
+      .required() 
+  })
+  
+  const userLoginSchema = Joi.object({
+    email: Joi.string()
+      .pattern(emailRegexp)
+      .required()
+      .messages({
+          "any.required": `missing required "email" field`,
+      }),  
+    password: Joi.string()
+      .required()
+      .messages({
+          "any.required": `missing required "password" field`,
+      }), 
+   }) 
+  
+const User = model('user', userSchema);
+
+module.exports = {
+    User, 
+    userRegisterSchema,
+    userLoginSchema, 
+}
