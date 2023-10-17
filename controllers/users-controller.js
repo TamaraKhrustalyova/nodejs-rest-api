@@ -5,7 +5,6 @@ const { HttpError } = require('../helpers/index');
 const { ctrlWrapper } = require('../decorators/index');
 
 const {JWT_SECRET} = process.env;
-console.log(JWT_SECRET)
 
 const register = async(req, res) => {
     const {email, password} = req.body;
@@ -39,10 +38,8 @@ const login = async(req, res) => {
     const payload = {
         id: user._id,
     }
-    console.log(payload)
 
     const token = jwt.sign(payload, JWT_SECRET, {expiresIn: "24h"});
-    console.log(JWT_SECRET)
     
     res.json({
         token,
