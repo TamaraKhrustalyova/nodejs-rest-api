@@ -22,7 +22,9 @@ const userSchema = new Schema({
         enum: subscriptionOption,
         default: "starter"
       },
-    token: String
+    token: {
+        type: String,
+    } 
 }, {versionKey: false, timestamps: true})
 
 userSchema.post("save", handleSaveError);

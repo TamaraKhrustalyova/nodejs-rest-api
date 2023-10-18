@@ -4,20 +4,23 @@ const { ctrlWrapper } = require('../decorators/index');
 const {contactAddSchema, contactUpdateFavoriteSchema} = require('../models/Contact');
 
 const getAll = async (req, res) => {
-      const result = await Contact.find();
+      const {_id: owner} = req.user;
+      const {page = 1, limit = 20} = req.query;
+      const skip = (page - 1)* limit;
+      const result = await Contact.find({owner}, {skip, limit}).populate("owner", "username email");
       res.json(result);
   }
 
   const getById = async (req, res) => {
+      const {_id: owner} = req.user;
       const { contactId } = req.params;
-      const result = await Contact.findById(contactId);
+      const result = await Contact.findById({_id: contactId, owner});
       if(!result) throw HttpError(404, "Not found");
       
       res.json(result);
   }
 
   const add = async (req, res) => {
-    console.log(req.user);
       const {_id: owner} = req.user;
       const {error} = contactAddSchema.validate(req.body);
       if (error) {
@@ -32,8 +35,9 @@ const getAll = async (req, res) => {
       if (error) {
         throw HttpError(400, error.message);
       }
+      const {_id: owner} = req.user;
       const {contactId} = req.params;
-      const result = await Contact.findByIdAndUpdate(contactId, req.body);
+      const result = await Contact.findOneAndUpdate({_id: contactId, owner}, req.body);
       if(!result) {
         throw HttpError(404, `Not found`);
       }
@@ -43,12 +47,11 @@ const getAll = async (req, res) => {
   const updateStatusContact = async (req, res) => {
     const {error} = contactUpdateFavoriteSchema.validate(req.body);
     if (error) {
-      console.log(error.message)
       throw HttpError(400, error.message);
     }
+    const {_id: owner} = req.user;
     const { contactId } = req.params;
-    const result = await Contact.findByIdAndUpdate(contactId, req.body);
-    console.log(contactId, req.body, result)
+    const result = await Contact.findOneAndUpdate({_id: contactId, owner}, req.body);
     if(!result) {
       throw HttpError(404, `Not found`);
     }
@@ -56,8 +59,9 @@ const getAll = async (req, res) => {
 }
 
   const deleteById = async (req, res) => {
+      const {_id: owner} = req.user;
       const { contactId } = req.params;
-      const result = await Contact.findByIdAndRemove(contactId);
+      const result = await Contact.findOneAndDelete({_id: contactId, owner});
       if(!result) {
         throw HttpError(404, `Not found`);
       }
