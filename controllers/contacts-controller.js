@@ -5,10 +5,16 @@ const {contactAddSchema, contactUpdateFavoriteSchema} = require('../models/Conta
 
 const getAll = async (req, res) => {
       const {_id: owner} = req.user;
-      const {page = 1, limit = 20} = req.query;
-      const skip = (page - 1)* limit;
-      const result = await Contact.find({owner}, {skip, limit}).populate("owner", "username email");
-      res.json(result);
+      const {page = 1, limit = 10, favorite} = req.query;
+      const skip = (page - 1) * limit;
+      if(favorite){
+        const result = await Contact.find({owner, favorite}, {}, {skip, limit}).populate("owner", "email");
+        res.json(result)
+      } else {
+        const result = await Contact.find({owner}, {}, {skip, limit}).populate("owner", "email");
+        res.json(result);
+      }
+      
   }
 
   const getById = async (req, res) => {
@@ -46,6 +52,7 @@ const getAll = async (req, res) => {
 
   const updateStatusContact = async (req, res) => {
     const {error} = contactUpdateFavoriteSchema.validate(req.body);
+    console.log(req.body)
     if (error) {
       throw HttpError(400, error.message);
     }
