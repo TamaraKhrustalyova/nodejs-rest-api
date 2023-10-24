@@ -6,7 +6,7 @@ const { ctrlWrapper } = require('../decorators/index');
 const gravatar = require('gravatar');
 const fs = require('fs/promises');
 const path = require('path');
-var Jimp = require("jimp");
+const Jimp = require("jimp");
 
 const avatarsPath = path.resolve('public', 'avatars');
 
@@ -85,12 +85,11 @@ const updateSubscription = async(req, res)=> {
 const updateAvatar = async(req, res)=> {
     const {_id} = req.user;
     const {path: oldPath, filename} = req.file;
-    // console.log(req.file)
     const newPath = path.join(avatarsPath, filename);
 
     await Jimp.read(oldPath)
         .then((img) => {
-            return img.resize(250, 250)
+            return img.resize(250, 250);
         })
         .catch((err) => {
             console.error(err);
@@ -101,7 +100,7 @@ const updateAvatar = async(req, res)=> {
     const avatar = path.join('public', 'avatars', 'filename');
 
     const result = await User.findByIdAndUpdate(_id, {avatarURL: avatar});
-    console.log(result)
+    console.log(req.file)
     res.status(201).json(result)
 }
 

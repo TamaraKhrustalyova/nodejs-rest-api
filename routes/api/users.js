@@ -10,7 +10,7 @@ const subscriptionOptionValidate = validateBody(userUpdateSubscription);
 
 const usersRouter = express.Router();
 
-usersRouter.post('/register', upload.single('avatar'), isEmptyBody, userRegisterValidate, usersController.register);
+usersRouter.post('/register', isEmptyBody, userRegisterValidate, usersController.register);
 
 usersRouter.post('/login', isEmptyBody, userLoginValidate, usersController.login);
 
