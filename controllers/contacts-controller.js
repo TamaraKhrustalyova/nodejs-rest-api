@@ -1,7 +1,7 @@
 const {Contact} = require('../models/Contact');
-const { HttpError } = require('../helpers/index');
+const {HttpError}  = require('../helpers/index');
 const { ctrlWrapper } = require('../decorators/index');
-const {contactAddSchema, contactUpdateFavoriteSchema} = require('../models/Contact');
+
 
 const getAll = async (req, res) => {
       const {_id: owner} = req.user;
@@ -28,19 +28,11 @@ const getAll = async (req, res) => {
 
   const add = async (req, res) => {
       const {_id: owner} = req.user;
-      const {error} = contactAddSchema.validate(req.body);
-      if (error) {
-        throw HttpError(400, error.message);
-      }
       const result = await Contact.create({...req.body, owner});
       res.status(201).json(result);
   }
 
   const updateById = async (req, res) => {
-      const {error} = contactAddSchema.validate(req.body);
-      if (error) {
-        throw HttpError(400, error.message);
-      }
       const {_id: owner} = req.user;
       const {contactId} = req.params;
       const result = await Contact.findOneAndUpdate({_id: contactId, owner}, req.body);
@@ -51,11 +43,6 @@ const getAll = async (req, res) => {
   }
 
   const updateStatusContact = async (req, res) => {
-    const {error} = contactUpdateFavoriteSchema.validate(req.body);
-    console.log(req.body)
-    if (error) {
-      throw HttpError(400, error.message);
-    }
     const {_id: owner} = req.user;
     const { contactId } = req.params;
     const result = await Contact.findOneAndUpdate({_id: contactId, owner}, req.body);
