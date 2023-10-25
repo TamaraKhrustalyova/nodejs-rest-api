@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const app = require('../../app');
 const request = require('supertest');
-const User = require('../../models/User');
+const { User } = require('../../models/User');
 
 
 const { TEST_DB_HOST, PORT = 3000 } = process.env;
@@ -17,13 +17,16 @@ describe("test login route", () => {
         await mongoose.connection.close();
         server.close();
     })
+        afterEach(async () => {
+        await User.deleteMany({});
+    })
 
     test("test register with correct data", async () => {
         const registerData = {
             email: "example@mail.com",
             password: "password"
         }
-        const { statusCode, body } = await request(app).post("/users/register").send(registerData);
+        const { statusCode, body } = await request(app).post("/api/users/register").send(registerData);
       
         
         expect(statusCode).toBe(201);
