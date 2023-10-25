@@ -36,4 +36,19 @@ describe("test login route", () => {
         const user = await User.findOne({ email: registerData.email });
         expect(user.email).toBe(registerData.email)
     })
+
+    test('test login with correct data', async () => { 
+        const loginData = {
+            email: "example@mail.com",
+            password: "password"
+        }
+        const { statusCode, body } = await request(app).post("/api/users/login").send(loginData);
+
+        const user = await User.findOne({ email: loginData.email });
+
+        expect(statusCode).toBe(200);
+        expect(body.email).toBe(loginData.email);
+        expect(body.subscription).toBe(user.subscription);
+        expect(body.token).toBe(user.token);
+    })
 })
