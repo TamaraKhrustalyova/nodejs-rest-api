@@ -22,4 +22,6 @@ usersRouter.patch('/subscription', authenticate, isEmptyBody, subscriptionOption
 
 usersRouter.patch('/avatars', upload.single('avatar'), authenticate, usersController.updateAvatar)
 
+usersRouter.get('/verify/:verificationToken', usersController.verify);
+
 module.exports = usersRouter;
