@@ -64,6 +64,15 @@ const userRegisterSchema = Joi.object({
       .messages({
           "any.required": `missing required "password" field`,
       }), 
+  }) 
+   
+  const userEmailSchema = Joi.object({
+    email: Joi.string()
+      .pattern(emailRegexp)
+      .required()
+      .messages({
+          "any.required": `missing required "email" field`,
+      }),  
    }) 
   
 const userUpdateSubscription = Joi.object({
@@ -77,4 +86,5 @@ module.exports = {
     userRegisterSchema,
     userLoginSchema, 
     userUpdateSubscription,
+    userEmailSchema,
 }
